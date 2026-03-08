@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图像语义通信接收端</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .panel.traditional .panel-title {
+            color: #ff9800;
+            border-color: #ff9800;
+        }
+
+        .panel.semantic .panel-title {
+            color: #667eea;
+            border-color: #667eea;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 350px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            /*width: 100%;*/
+            /*height: 100%;*/
+            object-fit: contain;
+        }
+
+        .placeholder {
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .metric-item {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .panel.traditional .metric-item {
+            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+        }
+
+        .panel.semantic .metric-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .metric-unit {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-left: 5px;
+        }
+
+        .comparison-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .comparison-title {
+            font-size: 1.8em;
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .comparison-grid-inner {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .comparison-item {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .comparison-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .comparison-values {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .value-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        .value-row.traditional {
+            background: rgba(255, 152, 0, 0.1);
+        }
+
+        .value-row.semantic {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .value-label {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .value-number {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .value-row.traditional .value-number {
+            color: #ff9800;
+        }
+
+        .value-row.semantic .value-number {
+            color: #667eea;
+        }
+
+        .status-bar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4caf50;
+            margin-right: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 5px;
+        }
+
+        .badge.semantic {
+            background: #667eea;
+        }
+
+        .badge.traditional {
+            background: #ff9800;
+        }
+
+        .winner-badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            margin-left: 10px;
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px #4caf50; }
+            50% { box-shadow: 0 0 20px #4caf50; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📡 语义通信系统</h1>
+            <div class="subtitle">
+                <span class="badge">接收端</span>
+                <span class="badge semantic">语义通信</span>
+                <span class="badge traditional">传统通信</span>
+                <span class="badge">实时对比</span>
+            </div>
+        </header>
+
+        <!-- 图像对比区域 -->
+        <div class="comparison-grid">
+            <!-- 传统通信 -->
+            <div class="panel traditional">
+                <div class="panel-title">📶 传统通信 (JPEG)</div>
+                <div class="image-container" id="container_traditional">
+                    <div class="placeholder">等待接收...</div>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">传输大小</div>
+                        <div class="metric-value" id="traditional_size">--</div>
+                        <span class="metric-unit">KB</span>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">PSNR</div>
+                        <div class="metric-value" id="traditional_psnr">--</div>
+                        <span class="metric-unit">dB</span>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">SSIM</div>
+                        <div class="metric-value" id="traditional_ssim">--</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">压缩率（对比JPEG）</div>
+                        <div class="metric-value" id="traditional_compression">--</div>
+                        <span class="metric-unit">%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 语义通信 -->
+            <div class="panel semantic">
+                <div class="panel-title">🚀 语义通信 </div>
+                <div class="image-container" id="container_semantic">
+                    <div class="placeholder">等待接收...</div>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">特征大小</div>
+                        <div class="metric-value" id="semantic_size">--</div>
+                        <span class="metric-unit">KB</span>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">PSNR</div>
+                        <div class="metric-value" id="semantic_psnr">--</div>
+                        <span class="metric-unit">dB</span>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">SSIM</div>
+                        <div class="metric-value" id="semantic_ssim">--</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">压缩率（对比JPEG）</div>
+                        <div class="metric-value" id="semantic_compression">--</div>
+                        <span class="metric-unit">%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 性能对比面板 -->
+        <div class="comparison-panel">
+            <div class="comparison-title">📊 性能对比分析</div>
+            <div class="comparison-grid-inner">
+                <div class="comparison-item">
+                    <div class="comparison-label">传输大小</div>
+                    <div class="comparison-values">
+                        <div class="value-row traditional">
+                            <span class="value-label">传统</span>
+                            <span class="value-number" id="comp_trad_size">--</span>
+                        </div>
+                        <div class="value-row semantic">
+                            <span class="value-label">语义</span>
+                            <span class="value-number" id="comp_sem_size">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-item">
+                    <div class="comparison-label">PSNR (越高越好)</div>
+                    <div class="comparison-values">
+                        <div class="value-row traditional">
+                            <span class="value-label">传统</span>
+                            <span class="value-number" id="comp_trad_psnr">--</span>
+                        </div>
+                        <div class="value-row semantic">
+                            <span class="value-label">语义</span>
+                            <span class="value-number" id="comp_sem_psnr">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-item">
+                    <div class="comparison-label">SSIM (越高越好)</div>
+                    <div class="comparison-values">
+                        <div class="value-row traditional">
+                            <span class="value-label">传统</span>
+                            <span class="value-number" id="comp_trad_ssim">--</span>
+                        </div>
+                        <div class="value-row semantic">
+                            <span class="value-label">语义</span>
+                            <span class="value-number" id="comp_sem_ssim">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-item">
+                    <div class="comparison-label">吞吐量</div>
+                    <div class="comparison-values">
+                        <div class="value-row traditional">
+                            <span class="value-label">传统</span>
+                            <span class="value-number" id="comp_trad_throughput">--</span>
+                        </div>
+                        <div class="value-row semantic">
+                            <span class="value-label">语义</span>
+                            <span class="value-number" id="comp_sem_throughput">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 状态栏 -->
+        <div class="status-bar" style="margin-top: 30px;">
+            <div>
+                <span class="status-indicator"></span>
+                <span style="font-size: 1.2em; color: #666;">接收中 | SNR: <span id="current_snr">--</span>dB | 信道: AWGN</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        const container_traditional = document.getElementById("container_traditional");
+        const container_semantic = document.getElementById("container_semantic");
+
+        socket.on("message", (data) => {
+            console.log("Received data:", data);
+            if (data.snr !== undefined) {
+        document.getElementById("current_snr").textContent = data.snr;
+    }
+
+            // 更新图像
+            container_traditional.innerHTML = "";
+            const traditionalImg = document.createElement("img");
+            traditionalImg.src = data.traditional_image_url + "?t=" + new Date().getTime();
+            container_traditional.appendChild(traditionalImg);
+
+            container_semantic.innerHTML = "";
+            const semanticImg = document.createElement("img");
+            semanticImg.src = data.semantic_image_url + "?t=" + new Date().getTime();
+            container_semantic.appendChild(semanticImg);
+
+            // 更新传统通信指标
+            document.getElementById("traditional_size").textContent = data.traditional_image_size;
+            document.getElementById("traditional_psnr").textContent = data.traditional_psnr;
+            document.getElementById("traditional_ssim").textContent = data.traditional_ssim;
+            document.getElementById("traditional_compression").textContent = data.traditional_compression_ratio;
+
+            // 更新语义通信指标
+            document.getElementById("semantic_size").textContent = data.semantic_feature_size;
+            document.getElementById("semantic_psnr").textContent = data.semantic_psnr;
+            document.getElementById("semantic_ssim").textContent = data.semantic_ssim;
+            document.getElementById("semantic_compression").textContent = data.semantic_compression_ratio;
+
+            // 更新对比面板
+            document.getElementById("comp_trad_size").textContent = data.traditional_image_size + " KB";
+            document.getElementById("comp_sem_size").textContent = data.semantic_feature_size + " KB";
+            
+            document.getElementById("comp_trad_psnr").textContent = data.traditional_psnr + " dB";
+            document.getElementById("comp_sem_psnr").textContent = data.semantic_psnr + " dB";
+            
+            document.getElementById("comp_trad_ssim").textContent = data.traditional_ssim;
+            document.getElementById("comp_sem_ssim").textContent = data.semantic_ssim;
+            
+            document.getElementById("comp_trad_throughput").textContent = data.traditional_throughput + " img/s";
+            document.getElementById("comp_sem_throughput").textContent = data.semantic_throughput + " img/s";
+
+            // 高亮更优的指标
+            highlightBetter("comp_trad_psnr", "comp_sem_psnr", data.traditional_psnr, data.semantic_psnr, true);
+            highlightBetter("comp_trad_ssim", "comp_sem_ssim", data.traditional_ssim, data.semantic_ssim, true);
+            highlightBetter("comp_trad_size", "comp_sem_size", data.traditional_image_size, data.semantic_feature_size, false);
+            highlightBetter("comp_trad_throughput", "comp_sem_throughput", data.traditional_throughput, data.semantic_throughput, true);
+        });
+
+        function highlightBetter(id1, id2, val1, val2, higherIsBetter) {
+            const elem1 = document.getElementById(id1);
+            const elem2 = document.getElementById(id2);
+            
+            // 移除现有的徽章
+            elem1.parentElement.querySelectorAll('.winner-badge').forEach(b => b.remove());
+            elem2.parentElement.querySelectorAll('.winner-badge').forEach(b => b.remove());
+            
+            if (val1 === val2 || val1 === '--' || val2 === '--') return;
+            
+            const isBetter = higherIsBetter ? (val2 > val1) : (val2 < val1);
+            if (isBetter) {
+                const badge = document.createElement('span');
+                badge.className = 'winner-badge';
+                badge.textContent = '✓ 更优';
+                elem2.parentElement.appendChild(badge);
+            } else {
+                const badge = document.createElement('span');
+                badge.className = 'winner-badge';
+                badge.textContent = '✓ 更优';
+                elem1.parentElement.appendChild(badge);
+            }
+        }
+
+        socket.on("connect", () => {
+            console.log("Connected to server");
+        });
+
+        socket.on("disconnect", () => {
+            console.log("Disconnected from server");
+        });
+    </script>
+</body>
+</html>

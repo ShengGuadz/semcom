@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图像语义通信发送端</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h1 { color: #667eea; font-size: 2em; margin-bottom: 5px; }
+        .panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 25px;
+        }
+        .panel-title {
+            font-size: 1.4em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            text-align: center;
+            font-weight: bold;
+        }
+        .image-container {
+            width: 100%;
+            height: 450px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+        }
+        .image-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        /* 核心指标样式 */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .info-item {
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .bg-blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .bg-orange { background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%); }
+
+        .info-label { font-size: 0.95em; opacity: 0.9; margin-bottom: 8px; }
+        .info-value { font-size: 2em; font-weight: bold; }
+        .info-unit { font-size: 0.9em; margin-left: 5px; }
+
+        .status-bar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .status-item { text-align: center; }
+        .status-label { color: #666; font-size: 0.9em; margin-bottom: 5px; }
+        .status-value { color: #667eea; font-size: 1.6em; font-weight: bold; }
+
+        .badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 语义通信系统 <span class="badge">发送端</span></h1>
+        </header>
+
+        <div class="panel">
+            <div class="panel-title">🖼️ 原始图像展示</div>
+            <div class="image-container" id="container_original">
+                <div class="placeholder">等待传输...</div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item bg-orange">
+                    <div class="info-label">JPEG 大小</div>
+                    <div class="info-value" id="original_size">--</div>
+                    <span class="info-unit">KB</span>
+                </div>
+                <div class="info-item bg-blue">
+                    <div class="info-label">语义特征大小</div>
+                    <div class="info-value" id="semantic_size">--</div>
+                    <span class="info-unit">KB</span>
+                </div>
+
+                <div class="info-item bg-orange">
+                    <div class="info-label">JPEG 编码耗时</div>
+                    <div class="info-value" id="jpeg_time">--</div>
+                    <span class="info-unit">ms</span>
+                </div>
+                <div class="info-item bg-blue">
+                    <div class="info-label">语义编码耗时</div>
+                    <div class="info-value" id="semantic_time">--</div>
+                    <span class="info-unit">ms</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-label">已发送图像</div>
+                <div class="status-value" id="image_count">0</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">平均 JPEG 耗时</div>
+                <div class="status-value" id="avg_jpeg_time">--</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">平均语义耗时</div>
+                <div class="status-value" id="avg_sem_time">--</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        let imageCount = 0;
+        let totalSemTime = 0;
+        let totalJpegTime = 0;
+
+        socket.on("message", (data) => {
+            // 1. 更新图像
+            const container = document.getElementById("container_original");
+            container.innerHTML = `<img src="${data.original_image_url}?t=${new Date().getTime()}">`;
+
+            // 2. 更新实时指标 (转换为 ms 显示更直观)
+            const semMs = (data.encode_time * 1000).toFixed(2);
+            const jpegMs = (data.encode_time_jpeg * 1000).toFixed(2);
+
+            document.getElementById("original_size").textContent = data.original_image_size;
+            document.getElementById("semantic_size").textContent = data.semantic_feature_size;
+            document.getElementById("semantic_time").textContent = semMs;
+            document.getElementById("jpeg_time").textContent = jpegMs;
+
+            // 3. 更新底部统计
+            imageCount++;
+            totalSemTime += parseFloat(semMs);
+            totalJpegTime += parseFloat(jpegMs);
+
+            document.getElementById("image_count").textContent = imageCount;
+            document.getElementById("avg_sem_time").textContent = (totalSemTime / imageCount).toFixed(2) + " ms";
+            document.getElementById("avg_jpeg_time").textContent = (totalJpegTime / imageCount).toFixed(2) + " ms";
+        });
+    </script>
+</body>
+</html>

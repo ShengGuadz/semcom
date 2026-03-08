@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>图像语义通信发送端</title>
+    <style>
+        /* 保持原有 CSS 不变，仅展示修改部分 */
+        body { font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .info-item { padding: 20px; border-radius: 12px; text-align: center; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .bg-blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .bg-orange { background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%); }
+        .info-value { font-size: 2em; font-weight: bold; }
+        .status-bar { background: white; padding: 20px; border-radius: 15px; display: flex; justify-content: space-around; margin-top: 20px;}
+        .status-value { font-size: 1.5em; font-weight: bold; color: #667eea; }
+        img { max-height: 400px; max-width: 100%; }
+        .panel { background: rgba(255,255,255,0.95); padding: 20px; border-radius: 15px; margin-bottom: 20px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel" style="text-align: center;">
+            <h1>🚀 语义通信系统 <span style="font-size:0.5em; background:#4caf50; color:white; padding:5px 10px; border-radius:10px;">发送端</span></h1>
+        </div>
+
+        <div class="panel">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div id="container_original" style="min-height: 400px; background: #eee; display:flex; align-items:center; justify-content:center;">
+                    等待传输...
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item bg-orange">
+                    <div class="info-label">JPEG 大小</div>
+                    <div class="info-value" id="original_size">--</div>
+                    <span class="info-unit">KB</span>
+                </div>
+                <div class="info-item bg-blue">
+                    <div class="info-label">语义特征大小</div>
+                    <div class="info-value" id="semantic_size">--</div>
+                    <span class="info-unit">KB</span>
+                </div>
+
+                <div class="info-item bg-orange">
+                    <div class="info-label">JPEG 总时延 (E+N+D)</div>
+                    <div class="info-value" id="jpeg_time">--</div>
+                    <span class="info-unit">ms</span>
+                </div>
+                <div class="info-item bg-blue">
+                    <div class="info-label">语义总时延 (E+N+D)</div>
+                    <div class="info-value" id="semantic_time">--</div>
+                    <span class="info-unit">ms</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-label">已发送图像</div>
+                <div class="status-value" id="image_count">0</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">平均 JPEG 总时延</div>
+                <div class="status-value" id="avg_jpeg_time">--</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">平均语义总时延</div>
+                <div class="status-value" id="avg_sem_time">--</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on("message", (data) => {
+            document.getElementById("container_original").innerHTML = `<img src="${data.original_image_url}?t=${new Date().getTime()}">`;
+
+            document.getElementById("original_size").textContent = data.original_image_size;
+            document.getElementById("semantic_size").textContent = data.semantic_feature_size;
+
+            // 使用后端传来的 total_latency 字段
+            document.getElementById("semantic_time").textContent = data.sem_total_latency;
+            document.getElementById("jpeg_time").textContent = data.jpeg_total_latency;
+
+            document.getElementById("image_count").textContent = data.image_count;
+            document.getElementById("avg_sem_time").textContent = data.avg_sem_latency + " ms";
+            document.getElementById("avg_jpeg_time").textContent = data.avg_jpeg_latency + " ms";
+        });
+    </script>
+</body>
+</html>

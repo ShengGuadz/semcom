@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepJSCC 发送端</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-title {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            text-align: center;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 400px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .placeholder {
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .info-unit {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-left: 5px;
+        }
+
+        .status-bar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4caf50;
+            margin-right: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            color: #667eea;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 5px;
+        }
+
+        .badge.semantic {
+            background: #667eea;
+        }
+
+        .badge.traditional {
+            background: #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 DeepJSCC 语义通信系统</h1>
+            <div class="subtitle">
+                <span class="badge">发送端</span>
+                <span class="badge semantic">深度学习联合源信道编码</span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- 原始图像面板 -->
+            <div class="panel">
+                <div class="panel-title">📤 原始图像</div>
+                <div class="image-container" id="container_original">
+                    <div class="placeholder">等待传输...</div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">原始大小</div>
+                        <div class="info-value" id="original_size">--</div>
+                        <span class="info-unit">KB</span>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">语义特征大小</div>
+                        <div class="info-value" id="semantic_size">--</div>
+                        <span class="info-unit">KB</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 传输信息面板 -->
+            <div class="panel">
+                <div class="panel-title">📊 传输统计</div>
+                <div class="info-grid" style="grid-template-columns: 1fr;">
+                    <div class="info-item">
+                        <div class="info-label">压缩比</div>
+                        <div class="info-value" id="compression_ratio">--</div>
+                        <span class="info-unit">×</span>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">编码时间</div>
+                        <div class="info-value" id="encode_time">--</div>
+                        <span class="info-unit">秒</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px; text-align: center;">
+                        系统信息
+                    </h3>
+                    <div style="line-height: 2; color: #666;">
+                        <div><strong>模型:</strong> DeepJSCC (CNN-based)</div>
+                        <div><strong>Bottleneck:</strong> c=16 通道</div>
+                        <div><strong>信道:</strong> AWGN, SNR=10dB</div>
+                        <div><strong>图像尺寸:</strong> 128×128</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div>
+                <span class="status-indicator"></span>
+                <span style="font-size: 1.2em; color: #666;">系统运行中</span>
+            </div>
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-label">已发送图像</div>
+                    <div class="metric-value" id="image_count">0</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">平均压缩比</div>
+                    <div class="metric-value" id="avg_compression">--</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">平均编码时间</div>
+                    <div class="metric-value" id="avg_encode_time">--</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        let imageCount = 0;
+        let totalCompression = 0;
+        let totalEncodeTime = 0;
+
+        const container_original = document.getElementById("container_original");
+
+        socket.on("message", (data) => {
+            console.log("Received data:", data);
+
+            // 更新图像
+            container_original.innerHTML = "";
+            const img = document.createElement("img");
+            img.src = data.original_image_url + "?t=" + new Date().getTime();
+            container_original.appendChild(img);
+
+            // 更新信息
+            document.getElementById("original_size").textContent = data.original_image_size;
+            document.getElementById("semantic_size").textContent = data.semantic_feature_size;
+            document.getElementById("compression_ratio").textContent = data.compression_ratio;
+            document.getElementById("encode_time").textContent = data.encode_time;
+
+            // 更新统计
+            imageCount++;
+            totalCompression += data.compression_ratio;
+            totalEncodeTime += data.encode_time;
+
+            document.getElementById("image_count").textContent = imageCount;
+            document.getElementById("avg_compression").textContent = 
+                (totalCompression / imageCount).toFixed(2) + "×";
+            document.getElementById("avg_encode_time").textContent = 
+                (totalEncodeTime / imageCount).toFixed(3) + "s";
+        });
+
+        socket.on("connect", () => {
+            console.log("Connected to server");
+        });
+
+        socket.on("disconnect", () => {
+            console.log("Disconnected from server");
+        });
+    </script>
+</body>
+</html>

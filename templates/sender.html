@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <title>Transmitter</title>
+<style>
+    body{
+        background: url('{{ url_for("static", filename="image/bg.jpg") }}') no-repeat ;
+        background-size: cover;
+        background-attachment: local;
+    }
+    h1{text-align: center;
+        margin-top: 0;
+    }
+    #title1{
+        font-weight: 800;
+        font-size: 25px;
+        color: darkcyan;
+        padding-top: 15px;
+        text-align: center;
+        z-index: 10;
+    }
+    #container_traditional img {
+        position: absolute;
+        top: 495px;
+        left: 180px;
+        width: 300px;
+        height: 210px;
+        z-index: 10;
+    }
+    #container_semantic img {
+        position: absolute;
+        top: 915px;
+        left: 180px;
+        width: 300px;
+        height: 210px;
+    }
+
+</style>
+
+</head>
+<body>
+    <div>
+        <br>
+        <img src="{{ url_for('static', filename='image/北邮 logo 蓝.png') }}" width=7% height=14% style="position: absolute;left: 50px">
+        <br>
+        <br><br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <p style="position: absolute;left: 220px;top:30px;font-size: 40px;color: #0033FF;">下 一 代 通 信 系 统 理 论 与 技 术 研 究 室</p>
+        <div style="text-align: center">
+            <b style="font-size: 50px" >
+            图像语义通信平台——发送端
+            </b>
+        </div>
+    </div>
+    <div id="title1">
+
+        <br>
+        <br>
+
+        <img src="{{ url_for('static', filename='Setting/图像发送端2.png') }}" width=100% height=100%>
+
+    </div>
+<!--    <div id="bandwidth-traditional"-->
+<!--    style="position: absolute; left: 1830px; top: 640px; color: red; font-weight: bold; font-size: 32px;">-->
+<!--    带宽-->
+<!--    </div>-->
+<!--    <div id="bandwidth-sematic"-->
+<!--    style="position: absolute; left: 1830px; top: 1160px; color: red; font-weight: bold; font-size: 32px;">-->
+<!--    带宽-->
+<!--    </div>-->
+    <div id="container_traditional"></div>
+    <div id="container_semantic"></div>
+
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        const container_traditional = document.getElementById("container_traditional");
+        const container_semantic = document.getElementById("container_semantic");
+
+        socket.on("message", (data) => {
+            console.log("new_image event triggered:", data);
+            container_traditional.innerHTML = "";
+            container_semantic.innerHTML = "";
+
+            const originalImg = document.createElement("img");
+            originalImg.src = data.original_image_url;
+            container_traditional.appendChild(originalImg);
+//
+            const semanticImg = document.createElement("img");
+            semanticImg.src = data.semantic_image_url;
+            container_semantic.appendChild(semanticImg);
+
+            // const traditionalBandwidth = data.original_image_size;
+            // const semanticBandwidth = data.semantic_feature_size;
+            // document.getElementById("bandwidth-traditional").innerText = `带宽:${traditionalBandwidth}KBps`;
+            // document.getElementById("bandwidth-sematic").innerText = `带宽:${semanticBandwidth}KBps`;
+        })
+
+
+        // setInterval(async () => {
+        //     container_traditional.innerHTML = "";
+        //     const response = await fetch('/get_new_image');
+        //     const data = await response.json();
+        //
+        //     // 获取返回的图片路径和元数据
+        //     const originalImageUrl = data.original_image_url;
+        //
+        //     // 创建并展示新的图片
+        //     const originalImg = document.createElement("img");
+        //     originalImg.src = originalImageUrl;  // 获取新图片的 URL
+        //     console.log(originalImageUrl);
+        //     container_traditional.appendChild(originalImg);
+        //
+        // }, 100);
+
+
+
+        // // 设置定时器，每5秒轮询一次
+        // setInterval(fetchAndDisplayImage, 5000);
+
+        // setInterval(() => {
+        //     CheckImgExists("../../../saved/sent_image/" + curIndex_input1 + ".png", successCallback1, filaCallback);
+        // }, 5000)
+        // setInterval(() => {
+        //     CheckImgExists("../../../saved/sent_image/" + curIndex_result1 + ".png", successCallback2, filaCallback);
+        // }, 5000)
+        // // setInterval(() => {
+        // //     CheckImgExists("last1/" + curIndex_last1 + ".jpg", successCallback3, filaCallback);
+        // // }, 500)
+        //
+        // function successCallback1(ImgObj1) {
+        //     curIndex_input1++;
+        //
+        //     container_input1.appendChild(ImgObj1)
+        // }
+        // function successCallback2(ImgObj2) {
+        //     curIndex_result1++;
+        //
+        //     container_result1.appendChild(ImgObj2)
+        // }
+        // // function successCallback3(ImgObj3) {
+        // //     curIndex_last1++;
+        // //
+        // //     container_last1.appendChild(ImgObj3)
+        // // }
+        //
+        // function filaCallback() {
+        //     console.log("图片不存在")
+        // }
+        //
+        // function CheckImgExists(imgurl, success, err) {
+        //     var ImgObj = new Image(); //判断图片是否存在
+        //     ImgObj.src = imgurl;
+        //     ImgObj.onload = function () {
+        //         console.log(ImgObj.width, ImgObj.height);
+        //         success && success(ImgObj)
+        //     }
+        //     ImgObj.onerror = function () {
+        //         console.log('error');
+        //         err && err(ImgObj)
+        //     }
+        //
+        // }
+    </script>
+</body>
+</html>

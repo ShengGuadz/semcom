@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <title>Receiver</title>
+<style>
+    body{
+        background: url('{{ url_for("static", filename="image/bg.jpg") }}') no-repeat ;
+        background-size: 2400px;
+        background-attachment: scroll;
+    }
+    h1{text-align: center;
+        margin-top: 0;
+    }
+    #title1{
+        font-weight: 800;
+        font-size: 25px;
+        color: darkcyan;
+        padding-top: 15px;
+        text-align: center;
+    }
+    #container_traditional img {
+        position: absolute;
+        top: 490px;
+        left: 1345px;
+        width: 320px;
+        height: 220px;
+    }
+    #container_semantic img {
+        position: absolute;
+        top: 950px;
+        left: 1350px;
+        width: 320px;
+        height: 220px;
+    }
+</style>
+
+</head>
+<body>
+    <div>
+<!--        <br>-->
+        <img src="{{ url_for('static', filename='image/北邮 logo 蓝.png') }}" width=7% height=14% style="position: absolute;left: 50px">
+<!--        <br>-->
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    <p style="position: absolute;left: 220px;top:30px;font-size: 40px;color:#0033FF">下 一 代 通 信 系 统 理 论 与 技 术 研 究 室</p>
+        <div style="text-align: center">
+            <b style="font-size: 50px" >
+                图像语义通信平台——接收端
+<!--                智能电网中基于语义通信和北斗卫星的电信采集技术平台——接收端-->
+            </b>
+        </div>
+    </div>
+
+    <div id="title1">
+        <br>
+        <br>
+        <br>
+        <img src="{{ url_for('static', filename='Setting/图像接收端2.png') }}" width=1890px height=930px style="float: left">
+<!--        <img src="{{ url_for('static', filename='Setting/图像接收端2.png') }}" width=100% height=100%>-->
+    </div>
+    <div id="bandwidth-traditional"
+    style="position: absolute; left: 30px; top: 690px; color: red; font-weight: bold; font-size: 32px;">
+    带宽
+    </div>
+    <div id="bandwidth-sematic"
+    style="position: absolute; left: 30px; top: 1150px; color: red; font-weight: bold; font-size: 32px;">
+    带宽
+    </div>
+    </div>
+<!--    <div id="psnr-traditional"-->
+    <div id="lpips-traditional"
+    style="position: absolute; left: 1400px; top: 720px; color: red; font-weight: bold; font-size: 32px;">
+<!--    PSNR-->
+        LPIPS
+    </div>
+<!--    <div id="psnr-sematic"-->
+    <div id="lpips-sematic"
+    style="position: absolute; left: 1400px; top: 1180px; color: red; font-weight: bold; font-size: 32px;">
+<!--    PSNR-->
+        LPIPS
+    </div>
+    <div id="container_traditional"></div>
+    <div id="container_semantic"></div>
+
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();// 🔥 监听后端推送的处理结果
+        const container_traditional = document.getElementById("container_traditional");
+        const container_semantic = document.getElementById("container_semantic");
+
+        socket.on("message", (data) => {
+            console.log("new_image event triggered:", data);
+            container_traditional.innerHTML = "";
+            container_semantic.innerHTML = "";
+             // 显示传统通信结果
+
+            const traditionalImg = document.createElement("img");
+            traditionalImg.src = data.traditional_image_url;
+            container_traditional.appendChild(traditionalImg);
+            // 显示语义通信结果
+
+            const semanticImg = document.createElement("img");
+            semanticImg.src = data.semantic_image_url;
+            container_semantic.appendChild(semanticImg);
+            // 更新带宽和质量指标显示
+            const traditionalBandwidth = data.traditional_image_size;
+            const semanticBandwidth = data.semantic_feature_size;
+            document.getElementById("bandwidth-traditional").innerText = `带宽: ${traditionalBandwidth}KBps`;
+            document.getElementById("bandwidth-sematic").innerText = `带宽: ${semanticBandwidth}KBps`;
+            //
+            // const traditionalPSNR = data.traditional_image_psnr;
+            // const semanticPSNR = data.semantic_image_psnr;
+            const traditionalLPIPS = data.traditional_image_lpips;
+            const semanticLPIPS = data.semantic_image_lpips;
+            // document.getElementById("psnr-traditional").innerText = `PSNR: ${traditionalPSNR}`;
+            // document.getElementById("psnr-sematic").innerText = `PSNR: ${semanticPSNR}`;
+            document.getElementById("lpips-traditional").innerText = `LPIPS: ${traditionalLPIPS}`;
+            document.getElementById("lpips-sematic").innerText = `LPIPS: ${semanticLPIPS}`;
+        })
+
+
+
+    </script>
+</body>
+</html>

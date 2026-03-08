@@ -1,0 +1,254 @@
+{
+  "summary": {
+    "total_images": 24,
+    "average_psnr": 12.589839935302734,
+    "average_ssim": 0.3787342868745327,
+    "average_encode_time_ms": 150.02647499999995,
+    "average_decode_time_ms": 162.41815416666668,
+    "average_owd_ms": -231.77488750000012,
+    "average_receive_time_ms": 254.65832499999996,
+    "average_total_latency_ms": 80.6697416666665
+  },
+  "per_image_stats": [
+    {
+      "counter": 1,
+      "psnr": 14.271787643432617,
+      "ssim": 0.2184513807296753,
+      "encode_time_ms": 3497.2412,
+      "decode_time_ms": 3875.9922,
+      "owd_ms": -4904.5721,
+      "receive_time_ms": 4928.4505,
+      "total_latency_ms": 2468.6612999999998
+    },
+    {
+      "counter": 2,
+      "psnr": 15.894611358642578,
+      "ssim": 0.5134506225585938,
+      "encode_time_ms": 4.8015,
+      "decode_time_ms": 1.0001,
+      "owd_ms": -36.8638,
+      "receive_time_ms": 58.3556,
+      "total_latency_ms": -31.0622
+    },
+    {
+      "counter": 3,
+      "psnr": 12.56612777709961,
+      "ssim": 0.3561457395553589,
+      "encode_time_ms": 3.3785,
+      "decode_time_ms": 1.0002,
+      "owd_ms": -33.6771,
+      "receive_time_ms": 53.6826,
+      "total_latency_ms": -29.298400000000004
+    },
+    {
+      "counter": 4,
+      "psnr": 13.682928085327148,
+      "ssim": 0.5261200666427612,
+      "encode_time_ms": 3.0045,
+      "decode_time_ms": 0.0,
+      "owd_ms": -77.7133,
+      "receive_time_ms": 99.7135,
+      "total_latency_ms": -74.7088
+    },
+    {
+      "counter": 5,
+      "psnr": 12.190455436706543,
+      "ssim": 0.1688384860754013,
+      "encode_time_ms": 4.0351,
+      "decode_time_ms": 2.001,
+      "owd_ms": -34.6369,
+      "receive_time_ms": 59.3805,
+      "total_latency_ms": -28.600799999999996
+    },
+    {
+      "counter": 6,
+      "psnr": 11.691875457763672,
+      "ssim": 0.25563982129096985,
+      "encode_time_ms": 3.0219,
+      "decode_time_ms": 2.1186,
+      "owd_ms": -24.0796,
+      "receive_time_ms": 49.5487,
+      "total_latency_ms": -18.9391
+    },
+    {
+      "counter": 7,
+      "psnr": 9.40687084197998,
+      "ssim": 0.4014768600463867,
+      "encode_time_ms": 3.0058,
+      "decode_time_ms": 1.0002,
+      "owd_ms": -28.8564,
+      "receive_time_ms": 49.9467,
+      "total_latency_ms": -24.8504
+    },
+    {
+      "counter": 8,
+      "psnr": 13.729256629943848,
+      "ssim": 0.4441778063774109,
+      "encode_time_ms": 4.3269,
+      "decode_time_ms": 0.9999,
+      "owd_ms": -23.0802,
+      "receive_time_ms": 46.8021,
+      "total_latency_ms": -17.753400000000003
+    },
+    {
+      "counter": 9,
+      "psnr": 10.760346412658691,
+      "ssim": 0.3261696696281433,
+      "encode_time_ms": 2.5076,
+      "decode_time_ms": 0.9997,
+      "owd_ms": -22.9515,
+      "receive_time_ms": 43.8431,
+      "total_latency_ms": -19.4442
+    },
+    {
+      "counter": 10,
+      "psnr": 10.46426010131836,
+      "ssim": 0.24910113215446472,
+      "encode_time_ms": 6.0058,
+      "decode_time_ms": 0.0,
+      "owd_ms": -24.7292,
+      "receive_time_ms": 45.5054,
+      "total_latency_ms": -18.723399999999998
+    },
+    {
+      "counter": 11,
+      "psnr": 13.719902038574219,
+      "ssim": 0.42234596610069275,
+      "encode_time_ms": 5.9966,
+      "decode_time_ms": 1.0036,
+      "owd_ms": -25.7219,
+      "receive_time_ms": 48.9591,
+      "total_latency_ms": -18.721700000000002
+    },
+    {
+      "counter": 12,
+      "psnr": 10.509510040283203,
+      "ssim": 0.3569105565547943,
+      "encode_time_ms": 4.9954,
+      "decode_time_ms": 0.0,
+      "owd_ms": -23.0018,
+      "receive_time_ms": 43.7702,
+      "total_latency_ms": -18.0064
+    },
+    {
+      "counter": 13,
+      "psnr": 8.378325462341309,
+      "ssim": 0.4877389371395111,
+      "encode_time_ms": 6.68,
+      "decode_time_ms": 1.0,
+      "owd_ms": -23.5865,
+      "receive_time_ms": 45.9819,
+      "total_latency_ms": -15.906500000000001
+    },
+    {
+      "counter": 14,
+      "psnr": 14.457959175109863,
+      "ssim": 0.4437907338142395,
+      "encode_time_ms": 5.999,
+      "decode_time_ms": 2.0003,
+      "owd_ms": -24.7675,
+      "receive_time_ms": 49.9509,
+      "total_latency_ms": -16.7682
+    },
+    {
+      "counter": 15,
+      "psnr": 13.819883346557617,
+      "ssim": 0.3972329795360565,
+      "encode_time_ms": 4.2468,
+      "decode_time_ms": 0.5251,
+      "owd_ms": -25.3702,
+      "receive_time_ms": 47.37,
+      "total_latency_ms": -20.598300000000002
+    },
+    {
+      "counter": 16,
+      "psnr": 11.99067211151123,
+      "ssim": 0.5191572904586792,
+      "encode_time_ms": 3.0003,
+      "decode_time_ms": 1.3942,
+      "owd_ms": -28.511,
+      "receive_time_ms": 53.8736,
+      "total_latency_ms": -24.1165
+    },
+    {
+      "counter": 17,
+      "psnr": 12.542150497436523,
+      "ssim": 0.3360617160797119,
+      "encode_time_ms": 4.0167,
+      "decode_time_ms": 1.0006,
+      "owd_ms": -24.4097,
+      "receive_time_ms": 45.4162,
+      "total_latency_ms": -19.392400000000002
+    },
+    {
+      "counter": 18,
+      "psnr": 12.888068199157715,
+      "ssim": 0.509902834892273,
+      "encode_time_ms": 5.9269,
+      "decode_time_ms": 0.0,
+      "owd_ms": -24.6531,
+      "receive_time_ms": 56.8461,
+      "total_latency_ms": -18.7262
+    },
+    {
+      "counter": 19,
+      "psnr": 12.821154594421387,
+      "ssim": 0.42450904846191406,
+      "encode_time_ms": 5.2185,
+      "decode_time_ms": 1.9997,
+      "owd_ms": -24.5833,
+      "receive_time_ms": 47.177,
+      "total_latency_ms": -17.3651
+    },
+    {
+      "counter": 20,
+      "psnr": 11.034835815429688,
+      "ssim": 0.19223570823669434,
+      "encode_time_ms": 5.9996,
+      "decode_time_ms": 0.0,
+      "owd_ms": -24.7334,
+      "receive_time_ms": 45.7965,
+      "total_latency_ms": -18.7338
+    },
+    {
+      "counter": 21,
+      "psnr": 12.550187110900879,
+      "ssim": 0.3587331175804138,
+      "encode_time_ms": 5.999,
+      "decode_time_ms": 2.0001,
+      "owd_ms": -23.2249,
+      "receive_time_ms": 45.3533,
+      "total_latency_ms": -15.225800000000003
+    },
+    {
+      "counter": 22,
+      "psnr": 14.232144355773926,
+      "ssim": 0.45209282636642456,
+      "encode_time_ms": 3.2228,
+      "decode_time_ms": 1.0001,
+      "owd_ms": -26.7947,
+      "receive_time_ms": 50.3763,
+      "total_latency_ms": -22.5718
+    },
+    {
+      "counter": 23,
+      "psnr": 12.097243309020996,
+      "ssim": 0.19972990453243256,
+      "encode_time_ms": 2.9999,
+      "decode_time_ms": 1.0001,
+      "owd_ms": -27.5483,
+      "receive_time_ms": 48.0754,
+      "total_latency_ms": -23.5483
+    },
+    {
+      "counter": 24,
+      "psnr": 16.45561981201172,
+      "ssim": 0.5296096801757812,
+      "encode_time_ms": 5.0051,
+      "decode_time_ms": 0.0,
+      "owd_ms": -24.5309,
+      "receive_time_ms": 47.6246,
+      "total_latency_ms": -19.5258
+    }
+  ]
+}
